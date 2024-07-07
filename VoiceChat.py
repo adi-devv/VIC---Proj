@@ -24,6 +24,6 @@ def takeCommand():
 if __name__ == "__main__":
     say("Initiating Script")
     while True:
-        print("Listening..")
+        print("Listening...")
         text = takeCommand()
         say(text)
