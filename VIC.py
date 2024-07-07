@@ -3,14 +3,24 @@ import time
 import subprocess
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 options = webdriver.ChromeOptions()
+options.add_argument(r'user-data-dir=C:\Users\aadit\AppData\Local\Google\Chrome\User Data')  # Update this path
 options.add_experimental_option('detach', True)
 
 
 def search(w):
     driver = webdriver.Chrome(options=options)
     driver.get(f"https://www.google.com/search?q={w}")
+
+
+def searchw(w):
+    driver = webdriver.Chrome(options=options)
+    driver.get(f"https://www.google.com/search?q={w}")
+
+    link = driver.find_element(By.CSS_SELECTOR, 'a[jsname="UWckNb"]')
+    link.click()
 
 
 def lock_windows():
