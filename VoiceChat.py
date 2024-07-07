@@ -12,18 +12,18 @@ def say(w):
 
 def takeCommand():
     r = sr.Recognizer()
-    try:
-        with sr.Microphone(
-                device_index=sr.Microphone.list_microphone_names().index('Headset (realme Buds T300)')) as mic:
-            r.pause_threshold = 1
-            r.energy_threshold = 300
-            audio = r.listen(mic)
-            query = r.recognize_google(audio, language="en-in")
-            print(f"User said: {query}")
-            return query
-    except Exception as e:
-        print(f"Some error occurred please try again..{e}")
-        pass
+    with sr.Microphone(
+            device_index=sr.Microphone.list_microphone_names().index('Headset (realme Buds T300)')) as mic:
+        r.pause_threshold = 1
+        audio = r.listen(mic)
+        try:
+            print("Recognizing...")
+            q = r.recognize_google(audio, language="en-in")
+            print(f"User said: {q}")
+            say(q)
+            return q
+        except Exception as e:
+            print(f"Some error occurred please try again..{e}")
 
 
 if __name__ == "__main__":
