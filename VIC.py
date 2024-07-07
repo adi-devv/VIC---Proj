@@ -12,6 +12,7 @@ def search(w):
     driver = webdriver.Chrome(options=options)
     driver.get(f"https://www.google.com/search?q={w}")
 
+
 def lock_windows():
     try:
         subprocess.run('rundll32.exe user32.dll,LockWorkStation', shell=True)
