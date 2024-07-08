@@ -34,27 +34,23 @@ class VoiceAssistant:
         self.speaker.Speak(w)
 
     def process(self, q):
-        if self.kw in q:
-            if 'lock' in q:
-                self.vic.initiate_lock()
+        if self.kw in q and 'lock' in q:
+            self.vic.initiate_lock()
+            return
 
-        elif 'search' in q:
-            txt = q.split('search', 1)[1].strip()
-            if txt:
-                self.say("Searching: " + txt)
-                self.vic.search(txt)
+        actions = {
+            'search': lambda txt: self.vic.search(txt.strip()) if txt else None,
+            'start': lambda app: os.system(f'start {app.strip()}') if app else None,
+            'open': lambda site: self.vic.search(site.strip(), True) if site else None
+        }
 
-        elif 'start' in q:
-            app = q.split('start', 1)[1].strip()
-            if app:
-                self.say("Starting: " + app)
-                os.system(f'start {app}')
-
-        elif 'open' in q:
-            site = q.split('open', 1)[1].strip()
-            if site:
-                self.say("Opening: " + site)
-                self.vic.search(site, True)
+        for action, func in actions.items():
+            if action in q:
+                txt = q.split(action, 1)[1].strip()
+                if txt:
+                    self.say(f"{action.capitalize()}ing: {txt}")
+                    func(txt)
+                return
 
     def run(self):
         self.say('Initiating Script')

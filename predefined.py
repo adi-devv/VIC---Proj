@@ -16,15 +16,20 @@ class Predefined:
         options = webdriver.ChromeOptions()
         options.add_argument(r'user-data-dir=C:\Users\aadit\AppData\Local\Google\Chrome\User Data')
         options.add_experimental_option('detach', True)
-        self.driver = self.driver = webdriver.Chrome(options=options)
+        self.driver = None
         self.options = options
         self.isLocked = True
         self.count = 0
 
+    def _get_driver(self):
+        if self.driver is None:
+            self.driver = webdriver.Chrome(options=self.options)
+        return self.driver
+
     def search(self, w, precise=False):
-        driver = self.driver
+        driver = self._get_driver()
         if self.count > 0:
-            driver.execute_script("window.open('');")
+            driver.execute_script('window.open('');')
             driver.switch_to.window(driver.window_handles[-1])
         driver.get(f"https://www.google.com/search?q={w}")
         self.count += 1
