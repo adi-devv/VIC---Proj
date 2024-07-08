@@ -1,4 +1,4 @@
-import time, os
+import time
 import subprocess
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -37,7 +37,7 @@ class Predefined:
             link = driver.find_element(By.CSS_SELECTOR, 'a[jsname="UWckNb"]')
             link.click()
 
-    def initiate_lock(self, key):
+    def initiate_lock(self):
         if self.isLocked:
             self.isLocked = False
             lock_windows()

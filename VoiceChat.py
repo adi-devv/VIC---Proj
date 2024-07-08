@@ -1,7 +1,7 @@
 import win32com.client
 import speech_recognition as sr
 import os
-from predefined import Predefined  # Assuming 'Predefined' class is in a file named 'predefined.py'
+from predefined import Predefined
 
 
 def take_command():
@@ -12,7 +12,7 @@ def take_command():
         audio = r.listen(mic)
         try:
             print('Recognizing...')
-            q = r.recognize_google(audio, language='en-in')
+            q = r.recognize_google(audio, language='hi-in')
             print(f'User said: {q}')
             return q
         except sr.UnknownValueError:
@@ -46,10 +46,10 @@ class VoiceAssistant:
 
         for action, func in actions.items():
             if action in q:
-                txt = q.split(action, 1)[1].strip()
-                if txt:
-                    self.say(f"{action.capitalize()}ing: {txt}")
-                    func(txt)
+                t = q.split(action, 1)[1].strip()
+                if t:
+                    self.say(f"{action.capitalize()}ing: {t}")
+                    func(t)
                 return
 
     def run(self):
