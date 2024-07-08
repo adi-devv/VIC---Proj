@@ -1,0 +1,2 @@
+pip install speech_recognition
+win32com.client
