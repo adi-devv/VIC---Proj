@@ -2,6 +2,7 @@ import win32com.client
 import speech_recognition as sr
 import os
 from predefined import Predefined
+from gemapi import GemChat
 
 
 def take_command():
@@ -12,7 +13,7 @@ def take_command():
         audio = r.listen(mic)
         try:
             print('Recognizing...')
-            q = r.recognize_google(audio, language='hi-in')
+            q = r.recognize_google(audio, language='en-in')
             print(f'User said: {q}')
             return q
         except sr.UnknownValueError:
@@ -27,11 +28,12 @@ class VoiceAssistant:
         self.speaker = win32com.client.Dispatch('SAPI.SpVoice')
         self.speaker.Voice = self.speaker.GetVoices().Item(1)
         self.vic = Predefined()
+        self.gem = GemChat()
         self.kw = 'hp'
 
     def say(self, w):
         print(w)
-        self.speaker.Speak(w)
+        self.speaker.Speak(w[:50])
 
     def process(self, q):
         if self.kw in q and 'lock' in q:
@@ -51,6 +53,8 @@ class VoiceAssistant:
                     self.say(f"{action.capitalize()}ing: {t}")
                     func(t)
                 return
+        else:
+            self.say(self.gem.sendmsg(q))
 
     def run(self):
         self.say('Initiating Script')
