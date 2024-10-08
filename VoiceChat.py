@@ -59,7 +59,7 @@ class VoiceAssistant:
     def run(self):
         self.say('Initiating Script')
         while True:
-            print('Listening...')
+            print('Listening..')
             query = take_command()
             if query:
                 self.process(query.lower())
