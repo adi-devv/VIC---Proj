@@ -45,4 +45,4 @@ class GemChat:
         response = self.chat_session.send_message(msg)
         self.history.append({"role": "model", "parts": [response.text]})
 
-        return response.text
+        return 'AI: '+response.text

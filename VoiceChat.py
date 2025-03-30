@@ -7,20 +7,28 @@ from gemapi import GemChat
 
 def take_command():
     r = sr.Recognizer()
-    mic_index = sr.Microphone.list_microphone_names().index('Headset (realme Buds T300)')
-    with sr.Microphone(device_index=mic_index) as mic:
-        r.pause_threshold = .6
-        audio = r.listen(mic)
-        try:
-            print('Recognizing...')
-            q = r.recognize_google(audio, language='en-in')
-            print(f'User said: {q}')
-            return q
-        except sr.UnknownValueError:
-            print("Google Speech Recogni tion could not understand audio")
-        except sr.RequestError as e:
-            print(f"Could not request results from Google Speech Recognition service; {e}")
-    return None
+
+    r.dynamic_energy_threshold = True
+    r.energy_threshold = 1000
+    while True:
+        with sr.Microphone(device_index=None) as mic:
+            r.pause_threshold = .6
+            r.adjust_for_ambient_noise(mic, duration=1)
+
+            try:
+                audio = r.listen(mic, timeout=5, phrase_time_limit=5)
+                print('Recognizing...')
+                q = r.recognize_google(audio, language='en-in')
+                print(f'User said: {q}')
+                return q
+            except sr.WaitTimeoutError:
+                print("Timed out waiting for speech. Retrying...")
+                continue
+            except sr.UnknownValueError:
+                print("Google Speech Recognition could not understand audio")
+            except sr.RequestError as e:
+                print(f"Could not request results from Google Speech Recognition service; {e}")
+        return None
 
 
 class VoiceAssistant:
@@ -42,8 +50,8 @@ class VoiceAssistant:
 
         actions = {
             'search': lambda txt: self.vic.search(txt.strip()) if txt else None,
-            'start': lambda app: os.system(f'start {app.strip()}') if app else None,
-            'open': lambda site: self.vic.search(site.strip(), True) if site else None
+            'start': lambda site: self.vic.open_app(site.strip()) if site else None,
+            'open': lambda site: self.vic.search(site.strip(), True) if site else None,
         }
 
         for action, func in actions.items():

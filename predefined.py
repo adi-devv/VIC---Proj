@@ -1,15 +1,14 @@
 import time
 import subprocess
+import pyautogui
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
 
 def lock_windows():
     try:
         subprocess.run('rundll32.exe user32.dll,LockWorkStation', shell=True)
     except Exception as e:
         print(f'Error: {e}')
-
 
 class Predefined:
     def __init__(self):
@@ -29,13 +28,20 @@ class Predefined:
     def search(self, w, precise=False):
         driver = self._get_driver()
         if self.count > 0:
-            driver.execute_script('window.open('');')
+            driver.execute_script("window.open('');")
             driver.switch_to.window(driver.window_handles[-1])
         driver.get(f"https://www.google.com/search?q={w}")
         self.count += 1
         if precise:
             link = driver.find_element(By.CSS_SELECTOR, 'a[jsname="UWckNb"]')
             link.click()
+
+    def open_app(self, app_name):
+        pyautogui.press("win")
+        time.sleep(0.5)
+        pyautogui.write(app_name)
+        time.sleep(0.5)
+        pyautogui.press("enter")
 
     def initiate_lock(self):
         if self.isLocked:
