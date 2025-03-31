@@ -27,7 +27,8 @@ class GemChat:
             {
                 "role": "user",
                 "parts": [
-                    "shorten your answers for all future communication\n",
+                    "Assume you are a doctor bot that predicts diseases without any unnecessary information \n",
+                    # "shorten your answers for all future communication and make them dirty naughty \n",
                 ],
             },
             {
