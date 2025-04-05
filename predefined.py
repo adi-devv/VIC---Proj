@@ -3,12 +3,16 @@ import subprocess
 import pyautogui
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import pynput
+from typing import Optional
+
 
 def lock_windows():
     try:
         subprocess.run('rundll32.exe user32.dll,LockWorkStation', shell=True)
     except Exception as e:
         print(f'Error: {e}')
+
 
 class Predefined:
     def __init__(self):
@@ -17,8 +21,9 @@ class Predefined:
         options.add_experimental_option('detach', True)
         self.driver = None
         self.options = options
-        self.isLocked = True
+        self.isLocked = False
         self.count = 0
+        self.key_listener: Optional[pynput.keyboard.Listener] = None
 
     def _get_driver(self):
         if self.driver is None:
@@ -36,7 +41,8 @@ class Predefined:
             link = driver.find_element(By.CSS_SELECTOR, 'a[jsname="UWckNb"]')
             link.click()
 
-    def open_app(self, app_name):
+    @staticmethod
+    def open_app(app_name):
         pyautogui.press("win")
         time.sleep(0.5)
         pyautogui.write(app_name)
@@ -45,24 +51,41 @@ class Predefined:
 
     def initiate_lock(self):
         if self.isLocked:
-            self.isLocked = False
+            self.isLocked = True
             lock_windows()
             time.sleep(5)
-            self.isLocked = True
+            self.isLocked = False
 
-# from pynput import keyboard
+    def instaLock(self, key):
+        self.initiate_lock()
 
-# class SystemLockdown:
-#     def __init__(self):
-#         self.isLocked = True
-#
+    def arm_system(self):
+        if self.key_listener is not None and self.key_listener.is_alive():
+            print("Keyboard listener is already running")
+            return
 
-#
-#     def on_key_press(self):
-#         try:
-#             with keyboard.Listener(on_release=self.initiate()) as key_listener:
-#                 key_listener.join()
-#         except Exception as e:
-#             print(f'Error in main: {e}')
+        try:
+            self.key_listener = pynput.keyboard.Listener(on_release=self.on_key_press)
+            self.key_listener.start()
+            print("Keyboard listener started")
+        except Exception as e:
+            print(f'Error starting keyboard listener: {e}')
 
-# SystemLockdown.on_key_press()
+    def disarm_system(self):
+        if self.key_listener is not None and self.key_listener.is_alive():
+            self.key_listener.stop()
+            print("Keyboard listener stopped")
+        else:
+            print("No active keyboard listener to stop")
+
+
+class SystemLockdown:
+    def __init__(self):
+        self.isLocked = True
+
+    def on_key_press(self):
+        try:
+            with pynput.keyboard.Listener(on_release=self.initiate()) as key_listener:
+                key_listener.join()
+        except Exception as e:
+            print(f'Error in main: {e}')
