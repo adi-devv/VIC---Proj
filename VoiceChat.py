@@ -31,6 +31,8 @@ class VoiceAssistant:
         self.engine.runAndWait()
 
     def take_command(self):
+        print('Recognizing..')
+
         with sr.Microphone(device_index=None) as mic:
             self.recognizer.pause_threshold = 0.6
             self.recognizer.adjust_for_ambient_noise(mic, duration=1)
@@ -110,7 +112,7 @@ class VoiceAssistant:
     def run(self):
         self.say('Initiating Script')
         msg = "Start chat"
-        ai_mode = True
+        ai_mode = False
         speakers = ["Alex", "Riley"]
         turn = 0
 
@@ -124,6 +126,7 @@ class VoiceAssistant:
             else:
                 response = self.gem.sendmsg(msg)
                 self.say(response)
+
                 user_input = self.take_command()
                 msg = user_input if user_input else response
 
